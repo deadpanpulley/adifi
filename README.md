@@ -85,6 +85,7 @@ Vite
 React
 Tailwind CSS
 Lucide Icons
+
 Made by [Advick Bhalla]
 
 AI helped me debug this project although it was bad but it helped find out critical errors
