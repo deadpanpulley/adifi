@@ -16,6 +16,7 @@ import { BatchProcessor } from './components/BatchProcessor';
 import { TextManager } from './components/TextManager';
 import { useImageEditor } from './hooks/useImageEditor';
 import { exportAdvanced } from './services/advancedExport';
+import BetaNotice from './components/BetaNotice';
 
 function App() {
   const {
@@ -68,6 +69,7 @@ function App() {
   const [showStyleTransfer, setShowStyleTransfer] = useState(false);
   const [showBatchProcessor, setShowBatchProcessor] = useState(false);
   const [showTextManager, setShowTextManager] = useState(false);
+  const [showBetaNotice, setShowBetaNotice] = useState(true);
 
   // Auto-show layers panel when layers exist
   useEffect(() => {
@@ -213,6 +215,7 @@ function App() {
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-secondary-50 via-white to-secondary-100 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900">
         {/* Header */}
+        <BetaNotice isOpen={showBetaNotice} onClose={() => setShowBetaNotice(false)} />
         <Header
           onFileSelect={handleFileSelect}
           onExport={handleExport}
