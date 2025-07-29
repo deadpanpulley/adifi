@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { LandingPage } from './components/LandingPage';
 import { Header } from './components/Header';
 import { Canvas } from './components/Canvas';
 import { ToolPanel } from './components/ToolPanel';
@@ -57,7 +56,6 @@ function App() {
     textElements
   } = useImageEditor();
 
-  const [showLanding, setShowLanding] = useState(true);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showLayerPanel, setShowLayerPanel] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -90,13 +88,8 @@ function App() {
 
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  const handleGetStarted = useCallback(() => {
-    setShowLanding(false);
-  }, []);
-
   const handleFileSelect = useCallback((file: File | File[]) => {
     loadImage(file);
-    setShowLanding(false);
     setIsMobileMenuOpen(false);
   }, [loadImage]);
 
@@ -209,11 +202,6 @@ function App() {
   const handleToggleBatchProcessor = useCallback(() => {
     setShowBatchProcessor(prev => !prev);
   }, []);
-
-  // Show landing page if no image loaded
-  if (showLanding) {
-    return <LandingPage onGetStarted={handleGetStarted} />;
-  }
 
   const isMobile = window.innerWidth < 1024;
 
