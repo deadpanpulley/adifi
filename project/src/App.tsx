@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Canvas } from './components/Canvas';
 import { ToolPanel } from './components/ToolPanel';
+import LandingPage from './components/LandingPage';
 import { LayerPanel } from './components/LayerPanel';
 import { DropZone } from './components/DropZone';
 import { ExportModal, ExportOptions } from './components/ExportModal';
@@ -15,7 +16,7 @@ import { StyleTransfer } from './components/StyleTransfer';
 import { BatchProcessor } from './components/BatchProcessor';
 import { TextManager } from './components/TextManager';
 import { useImageEditor } from './hooks/useImageEditor';
-import { exportAdvanced } from './services/advancedExport';
+   import { exportAdvanced } from './services/advancedExport';
 import BetaNotice from './components/BetaNotice';
 
 function App() {
@@ -56,7 +57,7 @@ function App() {
     processingTimes,
     textElements
   } = useImageEditor();
-
+  const [showLanding, setShowLanding] = useState(true);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showLayerPanel, setShowLayerPanel] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -88,10 +89,15 @@ function App() {
     return () => window.removeEventListener('toggleTextTool', handleToggleTextTool);
   }, []);
 
+  const handleGetStarted = useCallback(() => {
+    console.log('Get Started clicked');
+    setShowLanding(false);
+  }, []);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleFileSelect = useCallback((file: File | File[]) => {
     loadImage(file);
+    setShowLanding(false);
     setIsMobileMenuOpen(false);
   }, [loadImage]);
 
@@ -206,7 +212,9 @@ function App() {
   }, []);
 
   const isMobile = window.innerWidth < 1024;
-
+  if (showLanding) {
+    return <LandingPage onGetStarted={handleGetStarted} />;
+  }
   const getLoadingMessage = () => {
     if (isProcessingBackground) return 'Removing background...';
     return 'Processing...';
