@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { TrendingUp, RotateCcw, Eye, EyeOff } from 'lucide-react';
-import eye from 'lucide-react';
+
 interface CurvePoint {
   x: number;
   y: number;

@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { LandingPage } from './components/LandingPage';
 import { Header } from './components/Header';
 import { Canvas } from './components/Canvas';
 import { ToolPanel } from './components/ToolPanel';
-import LandingPage from './components/LandingPage';
 import { LayerPanel } from './components/LayerPanel';
 import { DropZone } from './components/DropZone';
 import { ExportModal, ExportOptions } from './components/ExportModal';
@@ -16,8 +16,7 @@ import { StyleTransfer } from './components/StyleTransfer';
 import { BatchProcessor } from './components/BatchProcessor';
 import { TextManager } from './components/TextManager';
 import { useImageEditor } from './hooks/useImageEditor';
-   import { exportAdvanced } from './services/advancedExport';
-import BetaNotice from './components/BetaNotice';
+import { exportAdvanced } from './services/advancedExport';
 
 function App() {
   const {
@@ -57,6 +56,7 @@ function App() {
     processingTimes,
     textElements
   } = useImageEditor();
+
   const [showLanding, setShowLanding] = useState(true);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showLayerPanel, setShowLayerPanel] = useState(false);
@@ -70,7 +70,6 @@ function App() {
   const [showStyleTransfer, setShowStyleTransfer] = useState(false);
   const [showBatchProcessor, setShowBatchProcessor] = useState(false);
   const [showTextManager, setShowTextManager] = useState(false);
-  const [showBetaNotice, setShowBetaNotice] = useState(true);
 
   // Auto-show layers panel when layers exist
   useEffect(() => {
@@ -89,11 +88,11 @@ function App() {
     return () => window.removeEventListener('toggleTextTool', handleToggleTextTool);
   }, []);
 
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+
   const handleGetStarted = useCallback(() => {
-    console.log('Get Started clicked');
     setShowLanding(false);
   }, []);
-  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleFileSelect = useCallback((file: File | File[]) => {
     loadImage(file);
@@ -211,19 +210,16 @@ function App() {
     setShowBatchProcessor(prev => !prev);
   }, []);
 
-  const isMobile = window.innerWidth < 1024;
+  // Show landing page if no image loaded
   if (showLanding) {
     return <LandingPage onGetStarted={handleGetStarted} />;
   }
-  const getLoadingMessage = () => {
-    if (isProcessingBackground) return 'Removing background...';
-    return 'Processing...';
-  };
+
+  const isMobile = window.innerWidth < 1024;
 
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-secondary-50 via-white to-secondary-100 dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900">
         {/* Header */}
-        <BetaNotice isOpen={showBetaNotice} onClose={() => setShowBetaNotice(false)} />
         <Header
           onFileSelect={handleFileSelect}
           onExport={handleExport}
@@ -425,19 +421,18 @@ function App() {
         />
 
         {/* Loading Overlay */}
-        {(isLoading || isProcessingBackground) ? (
+        {(isLoading || isProcessingBackground) && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
             <div className="bg-white rounded-xl p-8 shadow-2xl">
               <div className="flex items-center space-x-4">
-                {/* TODO: Find a cooler spinner animation later */}
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                 <span className="text-lg font-medium text-gray-900">
-                  {getLoadingMessage()}
+                  {isProcessingBackground ? 'Removing background...' : 'Processing...'}
                 </span>
               </div>
             </div>
           </div>
-        ) : null}
+        )}
       </div>
   );
 }
